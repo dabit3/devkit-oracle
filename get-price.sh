@@ -40,7 +40,9 @@ echo "----------------------------------------"
 # Call the AVS with the token ID as a string parameter
 # The signature indicates we're passing a string
 # The args contain the token ID
-devkit avs call signature="(string)" args="(\"$TOKEN_ID\")"
+# Note: Using printf to ensure clean string without control characters
+TOKEN_CLEAN=$(printf "%s" "$TOKEN_ID" | tr -d '[:cntrl:]')
+devkit avs call signature="(string)" args="(\"$TOKEN_CLEAN\")"
 
 echo "----------------------------------------"
 echo "Price fetch complete!"

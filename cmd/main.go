@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"time"
+	"unicode"
 
 	"github.com/Layr-Labs/hourglass-monorepo/ponos/pkg/performer/server"
 	performerV1 "github.com/Layr-Labs/protocol-apis/gen/protos/eigenlayer/hourglass/v1/performer"
@@ -59,14 +61,15 @@ func (tw *TaskWorker) ValidateTask(t *performerV1.TaskRequest) error {
 		return fmt.Errorf("task payload cannot be empty")
 	}
 
-	// Validate that payload is a valid string (token ID)
-	tokenID := string(t.Payload)
+	// Clean and validate the token ID
+	tokenID := cleanTokenID(string(t.Payload))
 	if tokenID == "" {
-		return fmt.Errorf("token ID cannot be empty")
+		return fmt.Errorf("token ID cannot be empty after cleaning")
 	}
 
 	tw.logger.Sugar().Infow("Task validation successful",
 		"tokenID", tokenID,
+		"originalPayload", fmt.Sprintf("%q", string(t.Payload)),
 	)
 
 	return nil
@@ -77,9 +80,9 @@ func (tw *TaskWorker) HandleTask(t *performerV1.TaskRequest) (*performerV1.TaskR
 		zap.Any("task", t),
 	)
 
-	// Extract token ID from payload
-	tokenID := string(t.Payload)
-	tw.logger.Sugar().Infow("Fetching price for token", "tokenID", tokenID)
+	// Extract token ID from payload and clean it
+	tokenID := cleanTokenID(string(t.Payload))
+	tw.logger.Sugar().Infow("Fetching price for token", "tokenID", tokenID, "original", fmt.Sprintf("%q", string(t.Payload)))
 
 	// Call CoinGecko API to get token price
 	priceData, err := tw.fetchTokenPrice(tokenID)
@@ -111,7 +114,26 @@ func (tw *TaskWorker) HandleTask(t *performerV1.TaskRequest) (*performerV1.TaskR
 	}, nil
 }
 
+// cleanTokenID removes control characters and whitespace from the token ID
+func cleanTokenID(tokenID string) string {
+	// Remove all control characters and trim whitespace
+	cleaned := strings.Map(func(r rune) rune {
+		if unicode.IsControl(r) {
+			return -1 // Remove control characters
+		}
+		return r
+	}, tokenID)
+	
+	// Trim any leading/trailing whitespace
+	cleaned = strings.TrimSpace(cleaned)
+	
+	return cleaned
+}
+
 func (tw *TaskWorker) fetchTokenPrice(tokenID string) (*PriceResponse, error) {
+	// Clean the token ID one more time to be safe
+	tokenID = cleanTokenID(tokenID)
+	
 	// CoinGecko API endpoint for token data
 	url := fmt.Sprintf("https://api.coingecko.com/api/v3/coins/%s?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false", tokenID)
 
