@@ -1,0 +1,10 @@
+{
+  "addresses": {
+    "l1ProxyAdmin": "0xc7b84E03054aCC854e866bD86eCb8D4C1B544f4e",
+    "taskAVSRegistrar": "0x89Db2f3428a07d9354fA1915414F2F581Da80188",
+    "taskAVSRegistrarImpl": "0x1718df6b9C8BfC821aFdA1249C44eA5a2D8e527b"
+  },
+  "chainInfo": {
+    "chainId": 31337
+  }
+}

@@ -1,0 +1,17 @@
+{{- $values := (datasource "values") -}}
+apiVersion: eigenruntime.io/v1alpha1
+kind: Hourglass
+name: {{ $values.project.name }}
+version: {{ $values.project.version }}
+spec:
+  aggregator:
+    registry: {{ $values.aggregator.image.registry }}
+    digest: {{ $values.aggregator.image.digest }}
+    env:
+    {{- range $env := $values.aggregator.env }}
+    - name: {{ $env.name }}
+      type: {{ $env.type }}
+      required: {{ $env.required }}
+    {{- end }}
+    resources:
+      tee_enabled: {{ $values.aggregator.resources.tee_enabled }}

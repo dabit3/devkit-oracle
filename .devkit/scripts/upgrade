@@ -1,0 +1,137 @@
+#!/usr/bin/env bash
+
+set -e
+
+originalProjectDir=$1
+
+if [ -z "$originalProjectDir" ]; then
+    log "Usage: $0 <original_project_dir>"
+    exit 1
+fi
+
+# source in helper functions
+source "$( dirname "${BASH_SOURCE[0]}" )/helpers/helpers.sh"
+
+log "Starting template upgrade process..."
+set +e
+cd $originalProjectDir
+if [ -n "$(git status --porcelain)" ]; then
+    log "Uncommitted changes found, please commit or stash them before upgrading"
+    git status --short
+    exit 1
+else
+    log "Working directory clean, continuing with upgrade..."
+fi
+set -e
+
+cd -
+
+# Get the directory where the script is located
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# Navigate to the parent directories to find .devkit
+PROJECT_BASE_DIR="$(dirname "$(dirname "$SCRIPT_DIR")")"
+
+# check if .devkit/contracts/.git exists
+if [[ ! -d "$originalProjectDir/.devkit/contracts/.git" ]]; then
+    cd $originalProjectDir
+    log "cd to '$originalProjectDir'"
+    log ".devkit/contracts is still a git submodule, removing"
+
+    log "running submodule deinit.."
+    git submodule deinit -f .devkit/contracts || true
+
+    log "removing submodule .devkit/contracts from git config.."
+    git rm -rf .devkit/contracts || true
+
+    log "removing .devkit/contracts directory.."
+    rm -rf .devkit/contracts || true
+
+    log "removing .devkit/contracts/.git directory.."
+    rm -rf .git/modules/.devkit/contracts || true
+
+
+    set +e
+    if [ -n "$(git status --porcelain)" ]; then
+        log "staging and committing changes.."
+        git add .
+        git commit -m 'chore: removed .devkit/contracts submodule as part of upgrade'
+    fi
+    set -e
+    cd -
+fi
+
+log "Copying .devkit to the original project directory..."
+# Copy everything from .devkit except for ./contracts
+for item in "${PROJECT_BASE_DIR}/.devkit/"*; do
+  [ "$(basename "$item")" = "contracts" ] && continue
+  cp -rfv "$item" "$originalProjectDir/.devkit/"
+done
+
+log "Updating .devkit/contracts from git submodule to regular directory..."
+mkdir $originalProjectDir/.devkit/contracts || true
+for item in "${PROJECT_BASE_DIR}/.devkit/contracts/"*; do
+  [ "$(basename "$item")" = "lib" ] && continue
+  cp -rfv "$item" "$originalProjectDir/.devkit/contracts/"
+done
+cp -rf "${PROJECT_BASE_DIR}/.gitmodules" $originalProjectDir
+
+rm -rf $originalProjectDir/.devkit/contracts/.git || true
+rm -rf $originalProjectDir/.devkit/contracts/lib/* || true
+
+# Copy the rest of the template
+log "Copying .hourglass and Dockerfile to the original project directory..."
+cp -rf "${PROJECT_BASE_DIR}/.hourglass" $originalProjectDir
+cp -rf "${PROJECT_BASE_DIR}/Dockerfile" $originalProjectDir
+
+log "Copying contracts to the original project directory..."
+cp -rf "${PROJECT_BASE_DIR}/contracts/" $originalProjectDir/contracts
+
+log "Updating submodules..."
+log "Re-initializing submodules from .gitmodules..."
+cd $originalProjectDir
+git submodule deinit --all || true
+git config -f .gitmodules --get-regexp '\.path$' | while read -r key path; do
+  name=${key#submodule.}; name=${name%.path}
+  url=$(git config -f .gitmodules --get "submodule.$name.url")
+  log "adding submodule $name -> $url at $path"
+  git submodule add --force --name "$name" "$url" "$path" || true
+done
+git submodule sync --recursive
+
+# Pin each submodule to the exact commit recorded in the templates tree
+git config -f .gitmodules --get-regexp '\.path$' | while read -r key path; do
+  # Read the gitlink SHA from the template repos tree at HEAD
+  sub_sha=$(git -C "$PROJECT_BASE_DIR" ls-tree -z HEAD -- "$path" 2>/dev/null | tr '\0' '\n' | awk '{print $3}')
+  if [ -n "$sub_sha" ]; then
+    log "Pinning $path to $sub_sha"
+    # Make sure the commit is fetchable and present locally
+    git -C "$path" remote update --prune || true
+    git -C "$path" fetch --all --tags --prune || true
+    # Detach at the exact SHA - prevents a branch like 'dev' from being checked out
+    if git -C "$path" rev-parse -q --verify "$sub_sha^{commit}" >/dev/null 2>&1; then
+      git -C "$path" checkout --detach "$sub_sha"
+      git add -- "$path"
+    else
+      log "WARNING: $path missing $sub_sha - leaving as-is"
+    fi
+  else
+    log "No commit recorded in template for $path - leaving as added"
+  fi
+done
+
+# Remove the orphaned submodule at contracts/lib/forge-std
+git submodule deinit -f contracts/lib/forge-std || true
+git rm -f contracts/lib/forge-std || true
+rm -rf .git/modules/contracts/lib/forge-std || true
+
+# Ensure worktrees match pinned gitlinks
+log "Updating submodules recursively at pinned commits..."
+git submodule update --init --recursive --checkout
+
+cd -
+
+log "Upgrade complete!"
+
+
+

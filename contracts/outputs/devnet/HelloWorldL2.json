@@ -1,0 +1,35 @@
+{
+  "name": "HelloWorldL2",
+  "address": "0x56186c1e64ca8043DEF78d06Aff222212ea5df71",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "getMessage",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "newMessage",
+          "type": "string"
+        }
+      ],
+      "name": "setMessage",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "chainInfo": {
+    "chainId": 31338
+  }
+}

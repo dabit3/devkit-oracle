@@ -1,0 +1,644 @@
+{
+  "name": "taskAVSRegistrarImpl",
+  "address": "0x1718df6b9C8BfC821aFdA1249C44eA5a2D8e527b",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "contract IAllocationManager",
+          "name": "_allocationManager",
+          "type": "address"
+        },
+        {
+          "internalType": "contract IKeyRegistrar",
+          "name": "_keyRegistrar",
+          "type": "address"
+        },
+        {
+          "internalType": "contract IPermissionController",
+          "name": "_permissionController",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "avs",
+              "type": "address"
+            },
+            {
+              "internalType": "uint32",
+              "name": "id",
+              "type": "uint32"
+            }
+          ],
+          "internalType": "struct OperatorSet",
+          "name": "operatorSet",
+          "type": "tuple"
+        },
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        }
+      ],
+      "name": "addOperatorToAllowlist",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "allocationManager",
+      "outputs": [
+        {
+          "internalType": "contract IAllocationManager",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "avs",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "uint32[]",
+          "name": "operatorSetIds",
+          "type": "uint32[]"
+        }
+      ],
+      "name": "deregisterOperator",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "avs",
+              "type": "address"
+            },
+            {
+              "internalType": "uint32",
+              "name": "id",
+              "type": "uint32"
+            }
+          ],
+          "internalType": "struct OperatorSet",
+          "name": "operatorSet",
+          "type": "tuple"
+        }
+      ],
+      "name": "getAllowedOperators",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getAvsConfig",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint32",
+              "name": "aggregatorOperatorSetId",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32[]",
+              "name": "executorOperatorSetIds",
+              "type": "uint32[]"
+            }
+          ],
+          "internalType": "struct ITaskAVSRegistrarBaseTypes.AvsConfig",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        }
+      ],
+      "name": "getOperatorSocket",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_avs",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_owner",
+          "type": "address"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint32",
+              "name": "aggregatorOperatorSetId",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32[]",
+              "name": "executorOperatorSetIds",
+              "type": "uint32[]"
+            }
+          ],
+          "internalType": "struct ITaskAVSRegistrarBaseTypes.AvsConfig",
+          "name": "_initialConfig",
+          "type": "tuple"
+        }
+      ],
+      "name": "initialize",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "avs",
+              "type": "address"
+            },
+            {
+              "internalType": "uint32",
+              "name": "id",
+              "type": "uint32"
+            }
+          ],
+          "internalType": "struct OperatorSet",
+          "name": "operatorSet",
+          "type": "tuple"
+        },
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        }
+      ],
+      "name": "isOperatorAllowed",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "keyRegistrar",
+      "outputs": [
+        {
+          "internalType": "contract IKeyRegistrar",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "permissionController",
+      "outputs": [
+        {
+          "internalType": "contract IPermissionController",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "uint32[]",
+          "name": "operatorSetIds",
+          "type": "uint32[]"
+        },
+        {
+          "internalType": "bytes",
+          "name": "data",
+          "type": "bytes"
+        }
+      ],
+      "name": "registerOperator",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "avs",
+              "type": "address"
+            },
+            {
+              "internalType": "uint32",
+              "name": "id",
+              "type": "uint32"
+            }
+          ],
+          "internalType": "struct OperatorSet",
+          "name": "operatorSet",
+          "type": "tuple"
+        },
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        }
+      ],
+      "name": "removeOperatorFromAllowlist",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint32",
+              "name": "aggregatorOperatorSetId",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32[]",
+              "name": "executorOperatorSetIds",
+              "type": "uint32[]"
+            }
+          ],
+          "internalType": "struct ITaskAVSRegistrarBaseTypes.AvsConfig",
+          "name": "config",
+          "type": "tuple"
+        }
+      ],
+      "name": "setAvsConfig",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_avs",
+          "type": "address"
+        }
+      ],
+      "name": "supportsAVS",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "internalType": "string",
+          "name": "socket",
+          "type": "string"
+        }
+      ],
+      "name": "updateSocket",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint32",
+          "name": "aggregatorOperatorSetId",
+          "type": "uint32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint32[]",
+          "name": "executorOperatorSetIds",
+          "type": "uint32[]"
+        }
+      ],
+      "name": "AvsConfigSet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "version",
+          "type": "uint8"
+        }
+      ],
+      "name": "Initialized",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "avs",
+              "type": "address"
+            },
+            {
+              "internalType": "uint32",
+              "name": "id",
+              "type": "uint32"
+            }
+          ],
+          "indexed": true,
+          "internalType": "struct OperatorSet",
+          "name": "operatorSet",
+          "type": "tuple"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        }
+      ],
+      "name": "OperatorAddedToAllowlist",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint32[]",
+          "name": "operatorSetIds",
+          "type": "uint32[]"
+        }
+      ],
+      "name": "OperatorDeregistered",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint32[]",
+          "name": "operatorSetIds",
+          "type": "uint32[]"
+        }
+      ],
+      "name": "OperatorRegistered",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "avs",
+              "type": "address"
+            },
+            {
+              "internalType": "uint32",
+              "name": "id",
+              "type": "uint32"
+            }
+          ],
+          "indexed": true,
+          "internalType": "struct OperatorSet",
+          "name": "operatorSet",
+          "type": "tuple"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        }
+      ],
+      "name": "OperatorRemovedFromAllowlist",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "socket",
+          "type": "string"
+        }
+      ],
+      "name": "OperatorSocketSet",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "DuplicateExecutorOperatorSetId",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ExecutorOperatorSetIdsEmpty",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidAggregatorOperatorSetId",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidPermissions",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "KeyNotRegistered",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NotAllocationManager",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "OperatorAlreadyInAllowlist",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "OperatorNotInAllowlist",
+      "type": "error"
+    }
+  ],
+  "chainInfo": {
+    "chainId": 31337
+  }
+}

@@ -1,0 +1,28 @@
+{{- $values := (datasource "values") -}}
+apiVersion: eigenruntime.io/v1alpha1
+kind: Hourglass
+name: {{ $values.project.name }}
+version: {{ $values.project.version }}
+spec:
+  executor:
+    registry: {{ $values.executor.image.registry }}
+    digest: {{ $values.executor.image.digest }}
+    env:
+    {{- range $env := $values.executor.env }}
+    - name: {{ $env.name }}
+      type: {{ $env.type }}
+      required: {{ $env.required }}
+    {{- end }}
+    resources:
+      tee_enabled: {{ $values.executor.resources.tee_enabled }}
+  performer:
+    registry: {{ $values.performer.image.registry }}
+    digest: {{ $values.performer.image.digest }}
+    env:
+    {{- range $env := $values.performer.env }}
+    - name: {{ $env.name }}
+      type: {{ $env.type }}
+      required: {{ $env.required }}
+    {{- end }}
+    resources:
+      tee_enabled: {{ $values.performer.resources.tee_enabled }}

@@ -1,0 +1,12 @@
+version: 0.0.3
+config:
+  project:
+    name: price-oracle
+    version: 0.1.0
+    context: devnet
+    project_uuid: 28905e7f-72f3-4b6c-bcb3-c33b052fec86
+    telemetry_enabled: true
+    templateBaseUrl: https://github.com/Layr-Labs/hourglass-avs-template
+    templateVersion: v0.0.25
+    templatelanguage: go
+    templateLanguage: "go"

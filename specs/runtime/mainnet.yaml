@@ -1,0 +1,18 @@
+# mainnet environment overrides
+aggregator:
+  env:
+    -  name: "EXAMPLE_ENV"
+       type: plain
+       required: false
+  resources:
+    tee_enabled: false
+
+executor:
+  env:
+  resources:
+    tee_enabled: false
+
+performer:
+  env:
+  resources:
+    tee_enabled: false

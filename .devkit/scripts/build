@@ -1,0 +1,109 @@
+#!/usr/bin/env bash
+set -e
+
+# source in helper functions
+source "$( dirname "${BASH_SOURCE[0]}" )/helpers/helpers.sh"
+
+# Check if required tools are available
+ensureMake
+ensureForge
+ensureDocker
+
+# Parse command line arguments
+IMAGE_NAME=""
+VERSION=""
+LANGUAGE=""
+
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --image)
+      IMAGE_NAME="$2"
+      shift 2
+      ;;
+    --image=*)
+      IMAGE_NAME="${1#*=}"
+      shift 1
+      ;;
+    --tag)
+      VERSION="$2"
+      shift 2
+      ;;
+    --tag=*)
+      VERSION="${1#*=}"
+      shift 1
+      ;;
+    --lang)
+      LANGUAGE="$2"
+      shift 2
+      ;;
+    --lang=*)
+      LANGUAGE="${1#*=}"
+      shift 1
+      ;;
+    *)
+      echo "Unknown option $1" >&2
+      exit 1
+      ;;
+  esac
+done
+
+# if image name is not provided , return error
+if [ -z "$IMAGE_NAME" ]; then
+  echo "Error: Image name is required in .devkit/scripts/build" >&2
+  exit 1
+fi
+
+# suffix the image name with -performer
+IMAGE_NAME="${IMAGE_NAME}-performer"
+
+log "Building contracts..."
+(cd .devkit/contracts && forge clean && forge build -- --include ../../contracts/**/*.sol && cd -) >&2
+
+# Build the contracts and dependencies
+log "Building AVS performer..."
+
+# Build the container and capture the JSON output
+if [ -n "$VERSION" ]; then
+  BUILD_OUTPUT=$(BUILD_CONTAINER=true ./.hourglass/scripts/build.sh --image "$IMAGE_NAME" --tag "$VERSION" 2>&1)
+else
+  BUILD_OUTPUT=$(BUILD_CONTAINER=true ./.hourglass/scripts/build.sh --image "$IMAGE_NAME" 2>&1)
+fi
+
+# Debug: Show the captured output
+echo "DEBUG: Full build output:" >&2
+echo "$BUILD_OUTPUT" >&2
+
+# Extract the JSON from the build output (look for lines starting with { and ending with })
+BUILD_JSON=$(echo "$BUILD_OUTPUT" | awk '/^{/,/^}/' | tr -d '\n')
+
+# Debug: Show the extracted JSON
+echo "DEBUG: Extracted JSON: '$BUILD_JSON'" >&2
+
+# Parse the JSON to get image_id and image name
+IMAGE_ID=$(echo "$BUILD_JSON" | jq -r '.image_id')
+BUILT_IMAGE_NAME=$(echo "$BUILD_JSON" | jq -r '.image')
+
+if [ -z "$IMAGE_ID" ] || [ "$IMAGE_ID" = "null" ]; then
+  echo "Error: Failed to get image ID from build output" >&2
+  echo "Build output: $BUILD_OUTPUT" >&2
+  exit 1
+fi
+
+log "Built container: $BUILT_IMAGE_NAME"
+log "Image ID: $IMAGE_ID"
+
+# Create JSON output with component
+RESULT=$(jq -n \
+    --arg component "$BUILT_IMAGE_NAME" \
+    --arg image_id "$IMAGE_ID" \
+    '{
+        artifact: {
+            artifactId: $image_id,
+            component: $component
+        }
+    }')
+
+# Print the JSON to stdout
+echo "$RESULT" | jq -c .
+
+log "Build completed successfully."
