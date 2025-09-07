@@ -1,4 +1,18 @@
-# Hourglass AVS Template
+# Example Price Oracle AVS
+
+To start the local network, run the following commands:
+
+```sh
+# Terminal 1 to start the devnet locally
+devkit avs devnet start --skip-avs-run
+
+# Terminal 2 to deploy the service
+devkit avs build && devkit avs run
+
+# Terminal 3 to call the service
+devkit avs call signature="(string)" args='("bitcoin")'
+```
+
 
 ## Getting Started
 
